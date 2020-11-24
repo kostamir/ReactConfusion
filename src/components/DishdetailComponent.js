@@ -21,7 +21,7 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
             );
     }
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, dishId}) {
 
             const coms = comments.map((comment) => {
                 return (
@@ -35,38 +35,9 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                     <div  className="col-12 col-md-5 m-1">
                         <h4>Comments</h4>
                         {coms}
-                        <CommentForm />
+                        <CommentForm dishId={dishId} addComment={addComment} />
                     </div>
                 );
-
-    }
-
-    const Dishdetail = (props) => {
-        if (props.dish != null) {
-            return (
-                <div className="container">
-                    <div className="row">
-                        <Breadcrumb>
-                            <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
-                            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
-                        </Breadcrumb>
-                        <div className="col-12">
-                            <h3>{props.dish.name}</h3>
-                            <hr />
-                        </div>
-                </div>
-                    <div className="row">
-                            <RenderDish dish={props.dish} />
-                            <RenderComments comments={props.comments} />
-                    </div>
-                </div>
-            );
-        }
-
-        else
-            return (
-                <div></div>
-            );
 
     }
 
@@ -90,8 +61,8 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
         }
 
         handleSubmit(values) {
-            console.log("Current State is: " + JSON.stringify(values));
-            alert("Current State is: " + JSON.stringify(values));
+            this.toggleModal();
+            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
         }
 
         render() {
@@ -108,11 +79,11 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                                     <Label htmlFor="rating" xs={12}>Rating</Label>
                                     <Col xs={12}>
                                         <Control.select model=".rating" id="rating" name="rating" className="form-control">
-                                            <option label="1" value="1">1</option>
-                                            <option label="2" value="2">2</option>
-                                            <option label="3" value="3">3</option>
-                                            <option label="4" value="4">4</option>
-                                            <option label="5" value="5">5</option>
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
                                         </Control.select>
                                     </Col>
                                 </Row>
@@ -159,6 +130,37 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                 </React.Fragment>
             );
         }
+    }
+
+    const Dishdetail = (props) => {
+        if (props.dish != null) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
+                        <div className="col-12">
+                            <h3>{props.dish.name}</h3>
+                            <hr />
+                        </div>
+                </div>
+                    <div className="row">
+                            <RenderDish dish={props.dish} />
+                            <RenderComments comments={props.comments}
+                                addComment={props.addComment}
+                                dishId={props.dish.id} />
+                    </div>
+                </div>
+            );
+        }
+
+        else
+            return (
+                <div></div>
+            );
+
     }
 
 export default Dishdetail;
