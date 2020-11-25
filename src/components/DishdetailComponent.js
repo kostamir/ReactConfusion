@@ -23,21 +23,22 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
             );
     }
 
-    function RenderComments({comments, addComment, dishId}) {
-
-            const coms = comments.map((comment) => {
-                return (
-                        <ul key={comment.id} className="list-unstyled">
-                            <p>{comment.comment}</p>
-                            <p>-- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
-                        </ul>
-                );
-            });
+    function RenderComments({comments, postComment, dishId}) {
+        if (comments != null)
                 return (
                     <div  className="col-12 col-md-5 m-1">
                         <h4>Comments</h4>
-                        {coms}
-                        <CommentForm dishId={dishId} addComment={addComment} />
+                        <ul className="list-unstyled">
+                            {comments.map((comment) => {
+                                return (
+                                    <li key={comment.id}>
+                                        <p>{comment.comment}</p>
+                                        <p>-- {comment.author} , {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        <CommentForm dishId={dishId} postComment={postComment} />
                     </div>
                 );
 
@@ -64,12 +65,12 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
 
         handleSubmit(values) {
             this.toggleModal();
-            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+            this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
         }
 
         render() {
             return (
-                <React.Fragment>
+                <div>
                     <Button outline onClick={this.toggleModal}>
                         <span className="fa fa-pencil fa-lg"></span> Submit Comment
                     </Button>
@@ -90,9 +91,9 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                                     </Col>
                                 </Row>
                                 <Row className="form-group">
-                                    <Label htmlFor="firstname" xs={12}>Your Name</Label>
+                                    <Label htmlFor="author" xs={12}>Your Name</Label>
                                     <Col xs={12}>
-                                        <Control.text model=".firstname" id="firstname" name="firstname"
+                                        <Control.text model=".author" id="author" name="author"
                                             placeholder="Your Name"
                                             className="form-control" 
                                             validators={{
@@ -129,7 +130,7 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                             </LocalForm>
                         </ModalBody>
                     </Modal>
-                </React.Fragment>
+                </div>
             );
         }
     }
@@ -169,7 +170,7 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
                     <div className="row">
                             <RenderDish dish={props.dish} />
                             <RenderComments comments={props.comments}
-                                addComment={props.addComment}
+                                postComment={props.postComment}
                                 dishId={props.dish.id} />
                     </div>
                 </div>
